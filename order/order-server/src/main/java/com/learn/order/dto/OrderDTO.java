@@ -1,12 +1,13 @@
 package com.learn.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.learn.order.entity.OrderDetail;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.learn.order.entity.OrderDetail;
+
+import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)

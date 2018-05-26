@@ -1,15 +1,18 @@
 package com.learn.order.entity;
 
-import com.learn.order.enums.OrderStatusEnum;
-import com.learn.order.enums.PayStatusEnum;
-import lombok.Data;
-import org.hibernate.annotations.DynamicUpdate;
+import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.util.Date;
+
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.learn.order.enums.OrderStatusEnum;
+import com.learn.order.enums.PayStatusEnum;
+
+import lombok.Data;
 
 /**
  * 订单表

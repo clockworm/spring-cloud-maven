@@ -1,9 +1,10 @@
 package com.learn.order.repository;
 
-import com.learn.order.entity.OrderDetail;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.learn.order.entity.OrderDetail;
 
 
 public interface OrderDetailDao extends JpaRepository<OrderDetail,String> {

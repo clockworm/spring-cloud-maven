@@ -1,5 +1,8 @@
 package com.learn.order.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.learn.order.dto.OrderDTO;
@@ -7,10 +10,8 @@ import com.learn.order.entity.OrderDetail;
 import com.learn.order.enums.ResultEnum;
 import com.learn.order.exception.OrderException;
 import com.learn.order.rest.form.OrderForm;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class OrderForm2OrderDTO {
