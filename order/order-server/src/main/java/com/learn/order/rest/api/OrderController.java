@@ -58,7 +58,7 @@ public class OrderController {
 	public void refushConfig(){
 		RestTemplate restTemplate = new RestTemplate();
 		HashMap<String,String> map = new HashMap<>();
-		ResponseEntity<String> entity = restTemplate.postForEntity("http://127.0.0.1:7171/actuator/bus-refresh",map,String.class);
+		ResponseEntity<String> entity = restTemplate.postForEntity("http://118.24.49.184:7171/actuator/bus-refresh",map,String.class);
 		System.err.println(entity.getBody());
 	}
 }
