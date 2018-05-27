@@ -6,11 +6,13 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.learn.order.config.OrderCofing;
 import com.learn.order.converter.OrderForm2OrderDTO;
@@ -50,5 +52,13 @@ public class OrderController {
 		Map<String,String> map = new HashMap<>();
 		map.put("orderId", dto.getOrderId());
 		return ResultDTOUtil.success(map);
+	}
+	
+	@PostMapping("refushConfig")
+	public void refushConfig(){
+		RestTemplate restTemplate = new RestTemplate();
+		HashMap<String,String> map = new HashMap<>();
+		ResponseEntity<String> entity = restTemplate.postForEntity("http://127.0.0.1:7171/actuator/bus-refresh",map,String.class);
+		System.err.println(entity.getBody());
 	}
 }
