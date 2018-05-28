@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.learn.order.config.OrderCofing;
+import com.learn.order.config.RabbitMQSender;
+import com.learn.order.config.RabbitRoutingEnum;
 import com.learn.order.converter.OrderForm2OrderDTO;
 import com.learn.order.dto.OrderDTO;
 import com.learn.order.enums.ResultEnum;
@@ -35,6 +38,8 @@ public class OrderController {
 	private OrderService orderService;
 	@Autowired
 	private OrderCofing orderCofing;
+	@Autowired
+	private RabbitMQSender rabbitMQSender;
 
 	@PostMapping("create")
 	public ResultDTO<?> create(@Valid OrderForm orderForm, BindingResult bindingResult) {
@@ -51,6 +56,12 @@ public class OrderController {
 		OrderDTO dto = orderService.create(orderDTO);
 		Map<String,String> map = new HashMap<>();
 		map.put("orderId", dto.getOrderId());
+		try {
+			String jsonString = JSONUtils.toJSONString(dto);
+			rabbitMQSender.send(jsonString, RabbitRoutingEnum.PRODUCT_KILL_ROUTING);
+		} catch (Exception e) {
+			log.error("发送MQ秒杀下单异常:{}",e);
+		}
 		return ResultDTOUtil.success(map);
 	}
 	
