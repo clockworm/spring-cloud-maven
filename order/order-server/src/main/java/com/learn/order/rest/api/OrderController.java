@@ -1,12 +1,21 @@
 package com.learn.order.rest.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import com.alibaba.druid.support.json.JSONUtils;
+import com.learn.order.config.OrderCofing;
+import com.learn.order.config.RabbitRoutingEnum;
+import com.learn.order.converter.OrderForm2OrderDTO;
+import com.learn.order.dto.OrderDTO;
+import com.learn.order.enums.ResultEnum;
+import com.learn.order.exception.OrderException;
+import com.learn.order.message.StreeamClient;
+import com.learn.order.rest.form.OrderForm;
+import com.learn.order.service.OrderService;
+import com.learn.product.dto.ResultDTO;
+import com.learn.product.util.ResultDTOUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,20 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.druid.support.json.JSONUtils;
-import com.learn.order.config.OrderCofing;
-import com.learn.order.config.RabbitMQSender;
-import com.learn.order.config.RabbitRoutingEnum;
-import com.learn.order.converter.OrderForm2OrderDTO;
-import com.learn.order.dto.OrderDTO;
-import com.learn.order.enums.ResultEnum;
-import com.learn.order.exception.OrderException;
-import com.learn.order.rest.form.OrderForm;
-import com.learn.order.service.OrderService;
-import com.learn.product.dto.ResultDTO;
-import com.learn.product.util.ResultDTOUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("order")
@@ -39,7 +37,7 @@ public class OrderController {
 	@Autowired
 	private OrderCofing orderCofing;
 	@Autowired
-	private RabbitMQSender rabbitMQSender;
+	private StreeamClient streeamClient;
 
 	@PostMapping("create")
 	public ResultDTO<?> create(@Valid OrderForm orderForm, BindingResult bindingResult) {
@@ -57,8 +55,8 @@ public class OrderController {
 		Map<String,String> map = new HashMap<>();
 		map.put("orderId", dto.getOrderId());
 		try {
-			String jsonString = JSONUtils.toJSONString(dto);
-			rabbitMQSender.send(jsonString, RabbitRoutingEnum.PRODUCT_KILL_ROUTING);
+//			String jsonString = JSONUtils.toJSONString(dto);
+			streeamClient.output().send(MessageBuilder.withPayload(dto).build());
 		} catch (Exception e) {
 			log.error("发送MQ秒杀下单异常:{}",e);
 		}
